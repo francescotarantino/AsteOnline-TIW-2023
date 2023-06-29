@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<link href="styles/main.css" rel="stylesheet" type="text/css" />
+	<title>Login - AsteOnline</title>
+</head>
+<body>
+	<ul class="navbar">
+		<li><h1>AsteOnline</h1></li>
+		<li><a href="index.html" class="selected">Accesso</a></li>
+		<li><a href="signup.html">Registrazione</a></li>
+	</ul>
+
+	<div id="content">
+		<form action="PerformLogin" method="POST" class="center">
+			<label for="usernameOrEmail">Username / Email: </label>
+			<input type="text" id="usernameOrEmail" name="usernameOrEmail" required>
+
+			<br>
+
+			<label for="password">Password: </label>
+			<input type="password" id="password" name="password" required>
+
+			<br><br>
+
+			<div class="center">
+				<input type="submit" value="Accedi">
+				<p class="error-message" th:text="${errorMessage}"></p>
+				<p><i>Non sei ancora registrato?</i> <a href="signup.html">Clicca qui!</a></p>
+			</div>
+		</form>
+	</div>
+</body>
+</html>

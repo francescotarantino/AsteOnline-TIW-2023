@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <link href="styles/main.css" rel="stylesheet" type="text/css" />
+
+    <script src="js/utils.js"></script>
+    <script src="js/signup.js" defer></script> <!-- defer is used to execute the script after the page has finished parsing -->
+
+    <title>Signup - AsteOnline</title>
+</head>
+<body>
+<ul class="navbar">
+    <li><h1>AsteOnline</h1></li>
+    <li><a href="index.html">Accesso</a></li>
+    <li><a href="signup.html" class="selected">Registrazione</a></li>
+</ul>
+
+<div id="content">
+    <form id="signup-form" class="center">
+        <label for="firstname">Nome: </label>
+        <input type="text" name="firstname" id="firstname" required placeholder="Mario">
+        <br>
+
+        <label for="lastname">Cognome: </label>
+        <input type="text" name="lastname" id="lastname" required placeholder="Rossi">
+        <br>
+
+        <label for="shipping_address">Indirizzo: </label>
+        <textarea id="shipping_address" name="shipping_address" required></textarea>
+        <br>
+
+        <label for="email">Email (facoltativa): </label>
+        <input type="email" name="email" id="email" placeholder="mario.rossi@proton.me">
+        <br>
+
+        <label for="username">Username (minimo 3 caratteri): </label>
+        <input type="text" name="username" id="username" required placeholder="mariorossi" minlength="3">
+
+        <label for="password">Password (minimo 8 caratteri): </label>
+        <input type="password" name="password" id="password" required minlength="8">
+        <br>
+        <label for="password_confirm">Conferma password: </label>
+        <input type="password" name="password_confirm" id="password_confirm" required minlength="8">
+
+        <br><br>
+
+        <div class="center">
+            <input type="submit" value="Registrati">
+            <p class="error-message"></p>
+        </div>
+    </form>
+</div>
+</body>
+</html>

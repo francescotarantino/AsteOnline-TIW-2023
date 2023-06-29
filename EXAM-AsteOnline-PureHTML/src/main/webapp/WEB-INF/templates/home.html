@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Home - AsteOnline</title>
+    <link href="../../styles/main.css" th:href="@{/styles/main.css}" rel="stylesheet" type="text/css" />
+</head>
+<body>
+    <ul class="navbar">
+        <li><h1>AsteOnline</h1></li>
+        <li><a href="buy.html" th:href="@{/Buy}">Acquista</a></li>
+        <li><a href="sell.html" th:href="@{/Sell}">Vendi</a></li>
+        <li class="spacer"></li>
+        <li class="right">Ciao <span th:text="${user.getFirstname()}">Nome</span>!</li>
+        <li class="right"><a href="Logout">Logout</a></li>
+    </ul>
+
+    <div id="content">
+        <h3>I tuoi dati</h3>
+        <ul>
+            <li><b>Nome:</b> <span th:text="${user.getFirstname()}">Nome</span></li>
+            <li><b>Cognome:</b> <span th:text="${user.getLastname()}">Cognome</span></li>
+            <li><b>Email:</b> <span th:text="${user.getEmail()} ?: 'N/D'">Email</span></li>
+            <li><b>Username:</b> <span th:text="${user.getUsername()}">Username</span></li>
+            <li><b>Indirizzo:</b> <span th:text="${user.getShippingAddress()}">Indirizzo</span></li>
+        </ul>
+    </div>
+</body>
+</html>

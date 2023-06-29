@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Acquisto - AsteOnline</title>
+    <link href="../../styles/main.css" th:href="@{/styles/main.css}" rel="stylesheet" type="text/css" />
+</head>
+<body>
+    <ul class="navbar">
+        <li><h1>AsteOnline</h1></li>
+        <li><a href="buy.html" th:href="@{/Buy}" class="selected">Acquista</a></li>
+        <li><a href="sell.html" th:href="@{/Sell}">Vendi</a></li>
+        <li class="spacer"></li>
+        <li class="right"><a href="Logout">Logout</a></li>
+    </ul>
+
+    <div id="content">
+        <h3>Ricerca</h3>
+        <form method="GET">
+            <label for="search">Cerca: </label>
+            <input type="search" name="q" id="search" required>
+            <input type="submit" value="Cerca">
+        </form>
+
+        <div th:if="${searchResults != null}">
+            <h3>Risultati della ricerca</h3>
+            <div th:switch="${searchResults.size()}">
+                <i th:case="0">Nessuna asta trovata!</i>
+                <table th:case="*">
+                    <thead>
+                    <tr>
+                        <th>Oggetti trovati</th>
+                        <th>Scadenza</th>
+                        <th>Offerta massima</th>
+                        <th>Azioni</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="auction: ${searchResults}" th:class="${auctionStat.odd} ? 'odd'" class="odd">
+                        <td th:text="${auction.getItemsMatch()} + ' (' + ${auction.getItemsMatchCount()} + ')'">Oggetto #1, Oggetto #2 (2)</td>
+                        <td th:text="${auction.getHumanReadableDeadline()}">1 giorno e 4 ore</td>
+                        <td th:switch="${auction.getMaxOffer()}">
+                            <span th:case="0.0">N/D</span>
+                            <span th:case="*" th:text="${#numbers.formatDecimal(auction.getMaxOffer(), 1, 'DEFAULT', 2, 'DEFAULT')} + '€'"></span>
+                        </td>
+                        <td>
+                            <a href="offer.html" th:href="@{/Offer(auctionID=${auction.getId()})}">Apri</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <h3>Aste aggiudicate</h3>
+        <div th:switch="${wonAuctions.size()}">
+            <p th:case="0">Non ti sei ancora aggiudicato un'asta!</p>
+            <table th:case="*">
+                <thead>
+                    <tr>
+                        <th>Codice articolo</th>
+                        <th>Immagine</th>
+                        <th>Nome articolo</th>
+                        <th>Descrizione</th>
+                        <th>Prezzo finale</th>
+                    </tr>
+                </thead>
+
+                <tbody th:each="auction : ${wonAuctions}" th:class="${auctionStat.odd} ? 'odd'" class="odd">
+                    <tr th:each="item : ${auction.getItems()}">
+                        <td th:text="${item.getCode()}">ART-6</td>
+                        <td>
+                            <a href="https://dummyimage.com/600x400/3ead48/ffffff&text=Example"
+                               th:href="@{'/GetImage/' + ${item.getImagePath()}}"
+                            >
+                                <img th:src="@{'/GetImage/' + ${item.getImagePath()}}"
+                                     th:alt="'Immagine ' + ${item.getName()}"
+                                     alt="Immagine di test" src="https://dummyimage.com/600x400/3ead48/ffffff&text=Example"
+                                >
+                            </a>
+                        </td>
+                        <td th:text="${item.getName()}">Articolo #6</td>
+                        <td th:text="${item.getDescription()} ?: 'N/D'">Descrizione dell'articolo numero sei</td>
+
+                        <td
+                                th:if="${itemStat.first}"
+                                th:rowspan="${auction.getItems().size()}"
+                                th:text="${#numbers.formatDecimal(auction.getFinalPrice(), 1, 'DEFAULT', 2, 'DEFAULT')} + '€'"
+                        ></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

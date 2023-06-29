@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Vendo - AsteOnline</title>
+    <link href="../../styles/main.css" th:href="@{/styles/main.css}" rel="stylesheet" type="text/css" />
+</head>
+<body>
+    <ul class="navbar">
+        <li><h1>AsteOnline</h1></li>
+        <li><a href="buy.html" th:href="@{/Buy}">Acquista</a></li>
+        <li><a href="sell.html" th:href="@{/Sell}" class="selected">Vendi</a></li>
+        <li class="spacer"></li>
+        <li class="right"><a href="Logout">Logout</a></li>
+    </ul>
+
+    <div id="content">
+        <h3>Aste aperte</h3>
+        <div th:switch="${openAuctions.size()}">
+            <i th:case="0">Nessuna asta aperta.</i>
+            <table th:case="*">
+                <thead>
+                <tr>
+                    <th>Codice articolo</th>
+                    <th>Nome articolo</th>
+                    <th>Offerta massima</th>
+                    <th>Tempo mancante</th>
+                    <th>Azioni</th>
+                </tr>
+                </thead>
+
+                <tbody th:each="auction : ${openAuctions}" th:class="${auctionStat.odd} ? 'odd'" class="odd">
+                <tr th:each="item : ${auction.getItems()}">
+                    <td th:text="${item.getCode()}">ART-6</td>
+                    <td th:text="${item.getName()}">Articolo #6</td>
+
+                    <td
+                            th:if="${itemStat.first}"
+                            th:rowspan="${auction.getItems().size()}"
+                            th:switch="${auction.getMaxOffer()}"
+                    >
+                        <span th:case="0.0">Nessuna offerta</span>
+                        <span th:case="*" th:text="${#numbers.formatDecimal(auction.getMaxOffer(), 1, 'DEFAULT', 2, 'DEFAULT')} + '€'"></span>
+                    </td>
+                    <td
+                            th:if="${itemStat.first}"
+                            th:rowspan="${auction.getItems().size()}"
+                            th:text="${auction.getHumanReadableDeadline()}"
+                    >Asta scaduta!</td>
+                    <td
+                            th:if="${itemStat.first}"
+                            th:rowspan="${auction.getItems().size()}"
+                    >
+                        <a href="auction_details.html" th:href="@{/AuctionDetails(auctionID=${auction.getId()})}">Dettaglio</a>
+                    </td>
+                </tr>
+                </tbody>
+
+                <tbody th:remove="all">
+                <tr>
+                    <td>ART-4</td>
+                    <td>Articolo #4</td>
+                    <td rowspan="2">12,20€</td>
+                    <td rowspan="2">2 ore</td>
+                    <td rowspan="2"><a href="auction_details.html">Dettaglio</a></td>
+                </tr>
+                <tr>
+                    <td>ART-5</td>
+                    <td>Articolo #5</td>
+                </tr>
+                </tbody>
+
+                <tbody th:remove="all" class="odd">
+                <tr>
+                    <td>ART-1</td>
+                    <td>Articolo #1</td>
+                    <td rowspan="3">100,00€</td>
+                    <td rowspan="3">10 giorni e 3 ore</td>
+                    <td rowspan="3"><a href="auction_details.html">Dettaglio</a></td>
+                </tr>
+                <tr>
+                    <td>ART-2</td>
+                    <td>Articolo #2</td>
+                </tr>
+                <tr>
+                    <td>ART-3</td>
+                    <td>Articolo #3</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div th:if="${closedAuctions.size() > 0}">
+            <h3>Aste chiuse</h3>
+            <table>
+                <thead>
+                <tr>
+                    <th>Codice articolo</th>
+                    <th>Nome articolo</th>
+                    <th>Aggiudicatario</th>
+                    <th>Prezzo finale</th>
+                    <th>Scadenza</th>
+                    <th>Azioni</th>
+                </tr>
+                </thead>
+
+                <tbody th:each="auction : ${closedAuctions}" th:class="${auctionStat.odd} ? 'odd'" class="odd">
+                <tr th:each="item : ${auction.getItems()}">
+                    <td th:text="${item.getCode()}">ART-6</td>
+                    <td th:text="${item.getName()}">Articolo #6</td>
+
+                    <td
+                            th:if="${itemStat.first}"
+                            th:rowspan="${auction.getItems().size()}"
+                            th:text="${auction.getWonByFullname()} ?: 'N/D'"
+                    ></td>
+                    <td
+                            th:if="${itemStat.first}"
+                            th:rowspan="${auction.getItems().size()}"
+                            th:switch="${auction.getFinalPrice()}"
+                    >
+                        <span th:case="0.0">N/D</span>
+                        <span th:case="*" th:text="${#numbers.formatDecimal(auction.getFinalPrice(), 1, 'DEFAULT', 2, 'DEFAULT')} + '€'"></span>
+                    </td>
+                    <td
+                            th:if="${itemStat.first}"
+                            th:rowspan="${auction.getItems().size()}"
+                            th:text="${#dates.format(auction.getDeadline(), 'dd/MM/yyyy HH:mm')}"
+                    ></td>
+                    <td
+                            th:if="${itemStat.first}"
+                            th:rowspan="${auction.getItems().size()}"
+                    >
+                        <a href="auction_details.html" th:href="@{/AuctionDetails(auctionID=${auction.getId()})}">Dettaglio</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="flex">
+            <form action="sell.html" th:action="@{/AddItem}" method="POST" enctype="multipart/form-data" class="half-width">
+                <h3>Inserisci nuovo articolo</h3>
+                <label for="item-code">Codice articolo: </label>
+                <input type="text" id="item-code" name="code" required>
+
+                <br>
+
+                <label for="item-name">Nome: </label>
+                <input type="text" id="item-name" name="name" required>
+
+                <br>
+
+                <label for="item-description">Descrizione: </label>
+                <textarea id="item-description" name="description"></textarea>
+
+                <br>
+
+                <label for="item-price">Prezzo: </label>
+                <input type="number" id="item-price" name="price" required min="0" step="0.01">
+
+                <br>
+                <label for="item-image">Carica un'immagine del prodotto</label>
+                <input type="file" id="item-image" name="image" required accept="image/*">
+
+                <br><br>
+
+                <input type="submit" value="Aggiungi articolo">
+
+                <br>
+
+                <p th:text="${addItemError}" class="error-message"></p>
+            </form>
+
+            <form action="sell.html" th:action="@{/NewAuction}" method="POST" class="half-width">
+                <h3>Crea una nuova asta</h3>
+                <fieldset>
+                    <legend>Seleziona uno o più articoli:</legend>
+
+                    <i th:if="${availableItems.isEmpty()}">Non hai articoli disponibili!</i>
+
+                    <div th:each="item : ${availableItems}" title="Lorem ipsum sit dolet" th:title="${item.getDescription()}">
+                        <input type="checkbox" name="items" id="art-1-demo" th:id="'sel-item-' + ${item.getCode()}"  th:value="${item.getCode()}">
+                        <label for="art-1-demo" th:for="'sel-item-' + ${item.getCode()}" th:text="${item.getName()} + ' (' + ${#numbers.formatDecimal(item.getPrice(), 1, 'DEFAULT', 2, 'DEFAULT')} + '€)'">Articolo #1 (50,00€)</label>
+                    </div>
+
+                    <div th:remove="all" title="Altra descrizione del prodotto...">
+                        <input type="checkbox" id="art-2-demo" name="items" checked>
+                        <label for="art-2-demo">Articolo #2 (7,13€)</label>
+                    </div>
+                </fieldset>
+                <p th:text="${newAuctionError}" class="error-message"></p>
+
+                <label for="auction-minimum-rise">Rialzo minimo: </label>
+                <input type="number" id="auction-minimum-rise" name="minimum_rise" required min="0" step="1">
+
+                <br><br>
+
+                <label for="auction-deadline">Scadenza: </label>
+                <input type="datetime-local" id="auction-deadline" name="deadline" required th:min="${#dates.format(#dates.createNow(), 'yyyy-MM-dd\'T\'HH:mm')}">
+
+                <br><br>
+
+                <input type="submit" value="Crea asta">
+            </form>
+        </div>
+    </div>
+</body>
+</html>

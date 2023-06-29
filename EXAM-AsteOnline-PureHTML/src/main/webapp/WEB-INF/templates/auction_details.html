@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link href="../../styles/main.css" th:href="@{/styles/main.css}" rel="stylesheet" type="text/css" />
+    <title>Dettaglio asta - AsteOnline</title>
+</head>
+<body>
+    <ul class="navbar">
+        <li><h1>AsteOnline</h1></li>
+        <li><a href="buy.html" th:href="@{/Buy}">Acquista</a></li>
+        <li><a href="sell.html" th:href="@{/Sell}">Vendi</a></li>
+        <li class="spacer"></li>
+        <li class="right"><a href="Logout">Logout</a></li>
+    </ul>
+
+    <div id="content">
+        <h2>Dettaglio asta #<span th:text="${auction.getId()}">1</span></h2>
+
+        <h3>Dati</h3>
+        <p>
+            <b>Stato:</b>
+            <span th:text="${auction.getStatus()}">Aperta</span>
+        </p>
+        <p>
+            <b>Scadenza:</b>
+            <span th:text="${#dates.format(auction.getDeadline(), 'dd/MM/yyyy HH:mm')}">10/02/2022 10:20</span>
+        </p>
+        <p>
+            <b>Prezzo di partenza:</b>
+            <span th:text="${#numbers.formatDecimal(auction.getStartingPrice(), 1, 'DEFAULT', 2, 'DEFAULT')} + '€'">100,00€</span>
+        </p>
+        <p>
+            <b>Rialzo minimo:</b>
+            <span th:text="${auction.getMinimumRise()} + '€'">10€</span>
+        </p>
+
+        <form action="auction_details.html" th:action="@{/CloseAuction}" method="POST" th:if="${auction.isExpired() and auction.getStatus().name() == 'OPEN'}">
+            <p>
+                <i>L'asta è scaduta.</i>
+                È necessario chiuderla per continuare.
+                <input type="submit" value="Chiudi">
+            </p>
+            <input type="hidden" th:value="${auction.getId()}" name="auction_id">
+        </form>
+
+        <div th:if="${auction.getStatus().name() == 'CLOSED'}">
+            <h3>Aggiudicatario</h3>
+            <div th:switch="${auction.getWonByFullname()}">
+                <div th:case="null">
+                    <i>L'asta non ha alcun aggiudicatario.</i>
+                </div>
+                <div th:case="*">
+                    <p>
+                        <b>Nome:</b>
+                        <span th:text="${auction.getWonByFullname()}">Mario Rossi</span>
+                    </p>
+                    <p>
+                        <b>Prezzo finale:</b>
+                        <span th:text="${#numbers.formatDecimal(auction.getFinalPrice(), 1, 'DEFAULT', 2, 'DEFAULT')} + '€'">100,00€</span>
+                    </p>
+                    <p>
+                        <b>Indirizzo di spedizione:</b>
+                        <span th:text="${auction.getWonByShippingAddress()}">Via Nazionale 1, Catania (10101)</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <h3>Articoli</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Immagine</th>
+                    <th>Codice</th>
+                    <th>Nome</th>
+                    <th>Descrizione</th>
+                    <th>Prezzo</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="item : ${items}" th:class="${itemStat.odd} ? 'odd'" class="odd">
+                    <td>
+                        <a href="https://dummyimage.com/600x400/3ead48/ffffff&text=Example"
+                           th:href="@{'/GetImage/' + ${item.getImagePath()}}"
+                        >
+                            <img th:src="@{'/GetImage/' + ${item.getImagePath()}}"
+                                 th:alt="'Immagine ' + ${item.getName()}"
+                                 alt="Immagine di test" src="https://dummyimage.com/600x400/3ead48/ffffff&text=Example"
+                            >
+                        </a>
+                    </td>
+                    <td th:text="${item.getCode()}">ART-1</td>
+                    <td th:text="${item.getName()}">Articolo #1</td>
+                    <td th:text="${item.getDescription()} ?: 'N/D'">Descrizione articolo #1</td>
+                    <td th:text="${#numbers.formatDecimal(item.getPrice(), 1, 'DEFAULT', 2, 'DEFAULT')} + '€'">100,00€</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>Offerte</h3>
+        <div th:switch="${offers.size()}">
+            <i th:case="0">Nessuna offerta pervenuta.</i>
+            <table th:case="*">
+                <thead>
+                <tr>
+                    <th>Utente</th>
+                    <th>Offerta</th>
+                    <th>Data</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="offer : ${offers}" th:class="${offerStat.odd} ? 'odd'" class="odd">
+                    <td th:text="${offer.getUsername()}">Utente #1</td>
+                    <td th:text="${#numbers.formatDecimal(offer.getPrice(), 1, 'DEFAULT', 2, 'DEFAULT')} + '€'">100,00€</td>
+                    <td th:text="${#dates.format(offer.getCreatedAt(), 'dd/MM/yyyy HH:mm')}">10/02/2022 10:20</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

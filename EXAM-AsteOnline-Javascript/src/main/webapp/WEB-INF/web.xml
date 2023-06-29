@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd" version="4.0">
+  <display-name>EXAM-AsteOnline-Javascript</display-name>
+
+  <!-- DB Configuration Params -->
+  <context-param>
+    <param-name>DB_URL</param-name>
+    <param-value>jdbc:mysql://localhost:3306/aste_online?serverTimezone=UTC</param-value>
+  </context-param>
+  <context-param>
+    <param-name>DB_USER</param-name>
+    <param-value>root</param-value>
+  </context-param>
+  <context-param>
+    <param-name>DB_PASSWORD</param-name>
+    <param-value>root</param-value>
+  </context-param>
+  <context-param>
+    <param-name>DB_DRIVER</param-name>
+    <param-value>com.mysql.cj.jdbc.Driver</param-value>
+  </context-param>
+
+  <!-- This is the path where uploaded files should be stored
+       See https://stackoverflow.com/a/18664715 -->
+  <context-param>
+    <param-name>STORAGE_PATH</param-name>
+    <param-value>/Users/francescotarantino/Sviluppo/tiw-workspace/server-storage</param-value>
+  </context-param>
+
+  <welcome-file-list>
+    <welcome-file>index.html</welcome-file>
+  </welcome-file-list>
+</web-app>
